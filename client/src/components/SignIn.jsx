@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import TextInput from "./TextInput";
 import Button from "./Button";
-// import { UserSignIn } from "../api";
+import { UserSignIn } from "../api";
 import { useNavigate } from "react-router-dom";
 import LogoImage from "../utils/Logo.png";
 import AuthImage from "../utils/AuthImage.jpg";
@@ -90,22 +90,24 @@ const SignIn = () => {
   };
 
   const handleSignIn = async () => {
-    // setLoading(true);
-    // setButtonDisabled(true);
-    // if (validateInputs()) {
-    //   try {
-    //     const res = await UserSignIn({ email, password });
-    //     alert("Login Success");
-    //     setLoading(false);
-    //     setButtonDisabled(false);
-    //     navigate("/dashboard");
-    //   } catch (err) {
-    //     alert(err.response.data.message);
-    //     setLoading(false);
-    //     setButtonDisabled(false);
-    //   }
-    // }
+    setLoading(true);
+    setButtonDisabled(true);
+    if (validateInputs()) {
+      try {
+        const res = await UserSignIn({ email, password });
+        // Assuming res.data contains relevant user data or tokens
+        localStorage.setItem('token', res.data.token); // Store token in local storage
+        setLoading(false);
+        setButtonDisabled(false);
+        navigate("/dashboard");
+      } catch (err) {
+        alert(err.response.data.message); // Display error message from server
+        setLoading(false);
+        setButtonDisabled(false);
+      }
+    }
   };
+  
 
   return (
     <Container>

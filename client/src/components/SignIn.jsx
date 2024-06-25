@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import TextInput from "./TextInput";
 import Button from "./Button";
-// import { UserSignUp } from "../api";
+// import { UserSignIn } from "../api";
 import { useNavigate } from "react-router-dom";
 import LogoImage from "../utils/Logo.png";
 import AuthImage from "../utils/AuthImage.jpg";
@@ -74,39 +74,33 @@ const TextButton = styled.span`
   font-weight: 600;
 `;
 
-const SignUp = () => {
+const SignIn = () => {
   const navigate = useNavigate();
-
   const [loading, setLoading] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const validateInputs = () => {
-    if (!name || !email || !password) {
+    if (!email || !password) {
       alert("Please fill in all fields");
       return false;
     }
     return true;
   };
 
-  const handleSignUp = async () => {
+  const handleSignIn = async () => {
     // setLoading(true);
     // setButtonDisabled(true);
     // if (validateInputs()) {
     //   try {
-    //     const response = await UserSignUp({ name, email, password });
-    //     if (!response) {
-    //       throw new Error("Empty response received");
-    //     }
-    //     console.log("Response data:", response.data);
-    //     alert("Sign Up Success");
+    //     const res = await UserSignIn({ email, password });
+    //     alert("Login Success");
     //     setLoading(false);
     //     setButtonDisabled(false);
-    //     navigate("/signin");
+    //     navigate("/dashboard");
     //   } catch (err) {
-    //     console.error("Sign up error:", err);
+    //     alert(err.response.data.message);
     //     setLoading(false);
     //     setButtonDisabled(false);
     //   }
@@ -121,8 +115,8 @@ const SignUp = () => {
       </Left>
       <Right>
         <div>
-          <Title>Create Account</Title>
-          <Span>Please fill in your details</Span>
+          <Title>Welcome to Fittrack 👋</Title>
+          <Span>Please login with your details here</Span>
         </div>
         <div
           style={{
@@ -133,12 +127,6 @@ const SignUp = () => {
             width: "100%",
           }}
         >
-          <TextInput
-            label="Name"
-            placeholder="Enter your name"
-            value={name}
-            handleChange={(e) => setName(e.target.value)}
-          />
           <TextInput
             label="Email Address"
             placeholder="Enter your email address"
@@ -153,19 +141,19 @@ const SignUp = () => {
             handleChange={(e) => setPassword(e.target.value)}
           />
           <Button
-            text="Sign Up"
-            onClick={handleSignUp}
+            text="SignIn"
+            onClick={handleSignIn}
             isLoading={loading}
             isDisabled={buttonDisabled}
           />
         </div>
         <Text>
-          Already have an account?{" "}
-          <TextButton onClick={() => navigate("/")}>SignIn</TextButton>
+          Don't have an account?{" "}
+          <TextButton onClick={() => navigate("/signup")}>SignUp</TextButton>
         </Text>
       </Right>
     </Container>
   );
 };
 
-export default SignUp;
+export default SignIn;

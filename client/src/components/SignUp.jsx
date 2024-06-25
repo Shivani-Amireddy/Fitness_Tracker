@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import TextInput from "./TextInput";
 import Button from "./Button";
-// import { UserSignUp } from "../api";
+import { UserSignUp } from "../api";
 import { useNavigate } from "react-router-dom";
 import LogoImage from "../utils/Logo.png";
 import AuthImage from "../utils/AuthImage.jpg";
@@ -92,25 +92,25 @@ const SignUp = () => {
   };
 
   const handleSignUp = async () => {
-    // setLoading(true);
-    // setButtonDisabled(true);
-    // if (validateInputs()) {
-    //   try {
-    //     const response = await UserSignUp({ name, email, password });
-    //     if (!response) {
-    //       throw new Error("Empty response received");
-    //     }
-    //     console.log("Response data:", response.data);
-    //     alert("Sign Up Success");
-    //     setLoading(false);
-    //     setButtonDisabled(false);
-    //     navigate("/signin");
-    //   } catch (err) {
-    //     console.error("Sign up error:", err);
-    //     setLoading(false);
-    //     setButtonDisabled(false);
-    //   }
-    // }
+    setLoading(true);
+    setButtonDisabled(true);
+    if (validateInputs()) {
+      try {
+        const response = await UserSignUp({ name, email, password });
+        if (!response) {
+          throw new Error("Empty response received");
+        }
+        console.log("Response data:", response.data);
+        alert("Sign Up Success");
+        setLoading(false);
+        setButtonDisabled(false);
+        navigate("/");
+      } catch (err) {
+        console.error("Sign up error:", err);
+        setLoading(false);
+        setButtonDisabled(false);
+      }
+    }
   };
 
   return (

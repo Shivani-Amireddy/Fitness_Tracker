@@ -10,11 +10,12 @@ import AuthImage from "../utils/AuthImage.jpg";
 const Container = styled.div`
   display: flex;
   background: ${({ theme }) => theme.bg};
-  height: 100vh; /* Set the height of the container to full viewport height */
+  height: 100vh;
   @media (max-width: 700px) {
     flex-direction: column;
   }
 `;
+
 const Left = styled.div`
   flex: 1;
   position: relative;
@@ -22,8 +23,9 @@ const Left = styled.div`
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  height: 100%; /* Set height to 100% to cover entire vertical space */
+  height: 100%;
 `;
+
 const Logo = styled.img`
   position: absolute;
   width: 70px;
@@ -31,6 +33,7 @@ const Logo = styled.img`
   left: 60px;
   z-index: 10;
 `;
+
 const Image = styled.img`
   width: 100%;
   height: 100%;
@@ -52,6 +55,7 @@ const Title = styled.div`
   font-weight: 800;
   color: ${({ theme }) => theme.text_primary};
 `;
+
 const Span = styled.div`
   font-size: 16px;
   font-weight: 400;
@@ -67,6 +71,7 @@ const Text = styled.div`
     font-size: 14px;
   }
 `;
+
 const TextButton = styled.span`
   color: ${({ theme }) => theme.primary};
   cursor: pointer;
@@ -95,19 +100,17 @@ const SignIn = () => {
     if (validateInputs()) {
       try {
         const res = await UserSignIn({ email, password });
-        // Assuming res.data contains relevant user data or tokens
-        localStorage.setItem('token', res.data.token); // Store token in local storage
+        localStorage.setItem('token', res.data.token);
         setLoading(false);
         setButtonDisabled(false);
         navigate("/dashboard");
       } catch (err) {
-        alert(err.response.data.message); // Display error message from server
+        alert(err.response.data.message);
         setLoading(false);
         setButtonDisabled(false);
       }
     }
   };
-  
 
   return (
     <Container>
@@ -150,8 +153,10 @@ const SignIn = () => {
           />
         </div>
         <Text>
-          Don't have an account?{" "}
-          <TextButton onClick={() => navigate("/signup")}>SignUp</TextButton>
+          Don’t have an account?{" "}
+          <TextButton onClick={() => navigate("/signup")}>
+            Sign Up
+          </TextButton>
         </Text>
       </Right>
     </Container>

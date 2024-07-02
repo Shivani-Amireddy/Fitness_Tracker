@@ -27,11 +27,13 @@ const RecommendationItem = styled.li`
   margin-bottom: 8px;
 `;
 
-const Recommendations = () => {
+const Recommendations = ({ sleepRecommendations, waterRecommendations }) => {
   // Dummy data for demonstration
   const recommendations = {
     diet: ["Increase protein intake with foods like chicken, fish, and legumes."],
     exercise: ["Include more cardio activities like running, cycling, and swimming."],
+    sleep: sleepRecommendations || ["Ensure to get at least 7-9 hours of sleep per night for optimal health."],
+    water: waterRecommendations || ["Drink at least 8 glasses (64 ounces) of water daily to stay hydrated."],
   };
 
   return (
@@ -47,6 +49,18 @@ const Recommendations = () => {
         <SectionTitle>Exercise Recommendations</SectionTitle>
         <RecommendationList>
           {recommendations.exercise.map((rec, index) => (
+            <RecommendationItem key={index}>{rec}</RecommendationItem>
+          ))}
+        </RecommendationList>
+        <SectionTitle>Sleep Recommendations</SectionTitle>
+        <RecommendationList>
+          {recommendations.sleep.map((rec, index) => (
+            <RecommendationItem key={index}>{rec}</RecommendationItem>
+          ))}
+        </RecommendationList>
+        <SectionTitle>Water Intake Recommendations</SectionTitle>
+        <RecommendationList>
+          {recommendations.water.map((rec, index) => (
             <RecommendationItem key={index}>{rec}</RecommendationItem>
           ))}
         </RecommendationList>

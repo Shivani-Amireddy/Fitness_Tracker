@@ -11,6 +11,7 @@ import FoodLogging from "./components/FoodLogging";
 import PhysicalActivityLogging from './components/PhysicalActivityLogging';
 import Recommendations from './components/Recommendations';
 import WaterIntakeTracker from './components/WaterIntakeTracker';
+import SleepGoals from './components/SleepGoals';
 
 const App = () => {
   return (
@@ -26,7 +27,7 @@ const App = () => {
             <Route path="/activity-logging" element={<PhysicalActivityLogging />} />
             <Route path="/recommendations" element={<Recommendations />} />
             <Route path="/water-intake" element={<WaterIntakeTracker />} />
-
+            <Route path="/sleep-tracking" element={<SleepGoals />} />
           </Routes>
         </Router>
       </AuthProvider>

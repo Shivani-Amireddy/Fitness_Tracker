@@ -10,6 +10,7 @@ import { AuthProvider } from './context/AuthContext';
 import FoodLogging from "./components/FoodLogging";
 import PhysicalActivityLogging from './components/PhysicalActivityLogging';
 import Recommendations from './components/Recommendations';
+import WaterIntakeTracker from './components/WaterIntakeTracker';
 
 const App = () => {
   return (
@@ -24,7 +25,7 @@ const App = () => {
             <Route path="/food-logging" element={<FoodLogging />} />
             <Route path="/activity-logging" element={<PhysicalActivityLogging />} />
             <Route path="/recommendations" element={<Recommendations />} />
-
+            <Route path="/water-intake" element={<WaterIntakeTracker />} />
 
           </Routes>
         </Router>

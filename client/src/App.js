@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Navbar from "./components/Navbar";
 import { AuthProvider } from './context/AuthContext';
 import FoodLogging from "./components/FoodLogging";
+import PhysicalActivityLogging from './components/PhysicalActivityLogging';
 
 const App = () => {
   return (
@@ -20,6 +21,8 @@ const App = () => {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/food-logging" element={<FoodLogging />} />
+            <Route path="/activity-logging" element={<PhysicalActivityLogging />} />
+
 
           </Routes>
         </Router>

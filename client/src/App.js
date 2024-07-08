@@ -12,13 +12,14 @@ import PhysicalActivityLogging from './components/PhysicalActivityLogging';
 import Recommendations from './components/Recommendations';
 import WaterIntakeTracker from './components/WaterIntakeTracker';
 import SleepGoals from './components/SleepGoals';
+import EditProfile from './components/Profile';
 
 const App = () => {
   return (
     <ThemeProvider theme={lightTheme}>
       <AuthProvider>
         <Router>
-          <Navbar />  {/* Place Navbar here */}
+          <Navbar />
           <Routes>
             <Route path="/" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
@@ -28,6 +29,8 @@ const App = () => {
             <Route path="/recommendations" element={<Recommendations />} />
             <Route path="/water-intake" element={<WaterIntakeTracker />} />
             <Route path="/sleep-tracking" element={<SleepGoals />} />
+            <Route path="/profile" element={<EditProfile />} />
+
           </Routes>
         </Router>
       </AuthProvider>

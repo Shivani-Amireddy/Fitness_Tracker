@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { logActivity, getActivityLogs, updateActivityLog, deleteActivityLog } from "../api";
 
 const ActivityLoggingContainer = styled.div`
   background-color: ${({ theme }) => theme.bg};
@@ -118,176 +119,156 @@ const DeleteButton = styled.button`
 `;
 
 const PhysicalActivityLogging = () => {
-  const [activityType, setActivityType] = useState("");
-  const [customActivityType, setCustomActivityType] = useState("");
-  const [duration, setDuration] = useState("");
-  const [intensity, setIntensity] = useState("");
-  const [activityList, setActivityList] = useState(() => {
-    const savedActivities = localStorage.getItem("activityList");
-    return savedActivities ? JSON.parse(savedActivities) : [];
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [editId, setEditId] = useState(null);
+    const [activityType, setActivityType] = useState("");
+    const [duration, setDuration] = useState("");
+    const [intensity, setIntensity] = useState("");
+    const [activityList, setActivityList] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [editId, setEditId] = useState(null);
 
-  const currentDate = new Date().toISOString().split("T")[0];
+    useEffect(() => {
+        fetchActivityLogs();
+    }, []);
 
-  useEffect(() => {
-    localStorage.setItem("activityList", JSON.stringify(activityList));
-  }, [activityList]);
+    const fetchActivityLogs = async () => {
+        try {
+            const data = await getActivityLogs();
+            setActivityList(data);
+        } catch (error) {
+            console.error("Error fetching activity logs:", error);
+        }
+    };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
 
-    const finalActivityType = activityType === "Others" ? customActivityType : activityType;
+        try {
+            if (editId !== null) {
+                await updateActivityLog({ id: editId, activityType, duration: parseInt(duration), intensity: parseInt(intensity) });
+            } else {
+                await logActivity({ activityType, duration: parseInt(duration), intensity: parseInt(intensity), date: new Date().toLocaleDateString() });
+            }
+            fetchActivityLogs();
+            setActivityType("");
+            setDuration("");
+            setIntensity("");
+            setEditId(null);
+        } catch (error) {
+            setError("Error logging activity.");
+            console.error("Log activity error:", error);
+        }
 
-    if (editId !== null) {
-      const updatedList = activityList.map((activity) =>
-        activity.id === editId
-          ? { ...activity, date: currentDate, activityType: finalActivityType, duration, intensity }
-          : activity
-      );
-      setActivityList(updatedList);
-      setEditId(null);
-    } else {
-      const newActivity = {
-        id: activityList.length + 1,
-        date: currentDate,
-        activityType: finalActivityType,
-        duration,
-        intensity,
-      };
-      setActivityList([...activityList, newActivity]);
-    }
+        setLoading(false);
+    };
 
-    setActivityType("");
-    setCustomActivityType("");
-    setDuration("");
-    setIntensity("");
-    setLoading(false);
-  };
+    const handleEdit = (activity) => {
+        setActivityType(activity.activityType);
+        setDuration(activity.duration);
+        setIntensity(activity.intensity);
+        setEditId(activity._id);
+    };
 
-  const handleEdit = (activity) => {
-    setActivityType(
-      ["Yoga", "Treadmill", "Cardio", "Cycling", "Running", "Swimming", "Weightlifting", "HIIT", "Pilates", "Dancing", "Hiking"].includes(activity.activityType)
-        ? activity.activityType
-        : "Others"
+    const handleDelete = async (id) => {
+        try {
+            await deleteActivityLog(id);
+            fetchActivityLogs();
+        } catch (error) {
+            console.error("Delete activity log error:", error);
+        }
+    };
+
+    return (
+        <ActivityLoggingContainer>
+            <SectionTitle>Physical Activity Logging</SectionTitle>
+            <ActivityForm onSubmit={handleSubmit}>
+                <FormGroup>
+                    <Label>Activity Type</Label>
+                    <Select
+                        value={activityType}
+                        onChange={(e) => setActivityType(e.target.value)}
+                        required
+                    >
+                        <option value="">Select activity type</option>
+                        <option value="Yoga">Yoga</option>
+                        <option value="Treadmill">Treadmill</option>
+                        <option value="Cardio">Cardio</option>
+                        <option value="Weight Lifting">Weight Lifting</option>
+                        <option value="Running">Running</option>
+                        <option value="Cycling">Cycling</option>
+                        <option value="Swimming">Swimming</option>
+                        <option value="Walking">Walking</option>
+                        <option value="Dancing">Dancing</option>
+                        <option value="Other">Other</option>
+                    </Select>
+                    {activityType === "Other" && (
+                        <Input
+                            type="text"
+                            value={activityType}
+                            onChange={(e) => setActivityType(e.target.value)}
+                            placeholder="Enter activity type"
+                            required
+                        />
+                    )}
+                </FormGroup>
+                <FormGroup>
+                    <Label>Duration (minutes)</Label>
+                    <Input
+                        type="number"
+                        value={duration}
+                        onChange={(e) => setDuration(e.target.value)}
+                        placeholder="Enter duration"
+                        required
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label>Intensity</Label>
+                    <Input
+                        type="number"
+                        value={intensity}
+                        onChange={(e) => setIntensity(e.target.value)}
+                        placeholder="Enter intensity"
+                        required
+                    />
+                </FormGroup>
+                <Button type="submit" disabled={loading}>{editId !== null ? "Update Activity" : "Log Activity"}</Button>
+            </ActivityForm>
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+
+            <SectionTitle>Activity List</SectionTitle>
+            {activityList.length === 0 ? (
+                <p>No activities logged yet.</p>
+            ) : (
+                <ActivityTable>
+                    <thead>
+                        <tr>
+                            <TableHeader>Activity Type</TableHeader>
+                            <TableHeader>Duration (minutes)</TableHeader>
+                            <TableHeader>Intensity</TableHeader>
+                            <TableHeader>Date</TableHeader>
+                            <TableHeader>Actions</TableHeader>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {activityList.map((activity) => (
+                            <tr key={activity._id}>
+                                <TableCell>{activity.activityType}</TableCell>
+                                <TableCell>{activity.duration}</TableCell>
+                                <TableCell>{activity.intensity}</TableCell>
+                                <TableCell>{activity.date}</TableCell>
+                                <TableCell>
+                                    <EditButton onClick={() => handleEdit(activity)}>Edit</EditButton>
+                                    <DeleteButton onClick={() => handleDelete(activity._id)}>Delete</DeleteButton>
+                                </TableCell>
+                            </tr>
+                        ))}
+                    </tbody>
+                </ActivityTable>
+            )}
+        </ActivityLoggingContainer>
     );
-    setCustomActivityType(
-      ["Yoga", "Treadmill", "Cardio", "Cycling", "Running", "Swimming", "Weightlifting", "HIIT", "Pilates", "Dancing", "Hiking"].includes(activity.activityType)
-        ? ""
-        : activity.activityType
-    );
-    setDuration(activity.duration);
-    setIntensity(activity.intensity);
-    setEditId(activity.id);
-  };
-
-  const handleDelete = (id) => {
-    const updatedList = activityList.filter((activity) => activity.id !== id);
-    setActivityList(updatedList);
-  };
-
-  return (
-    <ActivityLoggingContainer>
-      <SectionTitle>Log Daily Physical Activity</SectionTitle>
-      <ActivityForm onSubmit={handleSubmit}>
-        <FormGroup>
-          <Label>Type of Activity</Label>
-          <Select
-            value={activityType}
-            onChange={(e) => setActivityType(e.target.value)}
-            required
-          >
-            <option value="" disabled>
-              Select activity
-            </option>
-            <option value="Yoga">Yoga</option>
-            <option value="Treadmill">Treadmill</option>
-            <option value="Cardio">Cardio</option>
-            <option value="Cycling">Cycling</option>
-            <option value="Running">Running</option>
-            <option value="Swimming">Swimming</option>
-            <option value="Weightlifting">Weightlifting</option>
-            <option value="HIIT">HIIT</option>
-            <option value="Pilates">Pilates</option>
-            <option value="Dancing">Dancing</option>
-            <option value="Hiking">Hiking</option>
-            <option value="Others">Others</option>
-          </Select>
-          {activityType === "Others" && (
-            <Input
-              type="text"
-              value={customActivityType}
-              onChange={(e) => setCustomActivityType(e.target.value)}
-              placeholder="Enter activity type"
-              required
-            />
-          )}
-        </FormGroup>
-        <FormGroup>
-          <Label>Duration (in minutes)</Label>
-          <Input
-            type="number"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-            placeholder="Enter duration"
-            required
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label>Intensity</Label>
-          <Select
-            value={intensity}
-            onChange={(e) => setIntensity(e.target.value)}
-            required
-          >
-            <option value="" disabled>
-              Select intensity
-            </option>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </Select>
-        </FormGroup>
-        <Button type="submit">{editId !== null ? "Update Activity" : "Log Activity"}</Button>
-      </ActivityForm>
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-
-      <SectionTitle>Activity List</SectionTitle>
-      {activityList.length === 0 ? (
-        <p>No activities logged yet.</p>
-      ) : (
-        <ActivityTable>
-          <thead>
-            <tr>
-              <TableHeader>Date</TableHeader>
-              <TableHeader>Type of Activity</TableHeader>
-              <TableHeader>Duration</TableHeader>
-              <TableHeader>Intensity</TableHeader>
-              <TableHeader>Actions</TableHeader>
-            </tr>
-          </thead>
-          <tbody>
-            {activityList.map((activity) => (
-              <tr key={activity.id}>
-                <TableCell>{activity.date}</TableCell>
-                <TableCell>{activity.activityType}</TableCell>
-                <TableCell>{activity.duration}</TableCell>
-                <TableCell>{activity.intensity}</TableCell>
-                <TableCell>
-                  <EditButton onClick={() => handleEdit(activity)}>Edit</EditButton>
-                  <DeleteButton onClick={() => handleDelete(activity.id)}>Delete</DeleteButton>
-                </TableCell>
-              </tr>
-            ))}
-          </tbody>
-        </ActivityTable>
-      )}
-    </ActivityLoggingContainer>
-  );
 };
 
 export default PhysicalActivityLogging;

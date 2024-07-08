@@ -1,21 +1,34 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
-const bcrypt = require('bcryptjs');
-const userRoutes = require('./routes/userRoutes'); // Update to use the new routes
 require('dotenv').config();
 
-const app = express();
-const PORT = process.env.PORT || 8082;
-const MONGODB_URI = process.env.MONGODB_URI;
+const userRoutes = require('./routes/userRoutes');
+const foodRoutes = require('./routes/foodRoutes');
+const activityRoutes = require('./routes/activityRoutes');
 
-app.use(cors());
+const app = express();
+const port = process.env.PORT || 8082;
+
 app.use(express.json());
 
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('Failed to connect to MongoDB:', err));
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => console.log('MongoDB connected'))
+  .catch(err => console.log(err));
+
+// CORS middleware configuration
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001'); // Replace with your frontend URL
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
 
 app.use('/api/user', userRoutes);
+app.use('/api/food', foodRoutes);
+app.use('/api/activity', activityRoutes);
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});

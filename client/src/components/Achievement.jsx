@@ -53,35 +53,34 @@ const ShareButton = styled.button`
   }
 `;
 const Achievement = ({ title, metrics }) => {
-  const shareUrl = "https://yourfitnesswebsite.com"; // Define shareUrl here
-  const shareQuote = `I achieved ${title} with ${metrics.steps} steps and ${metrics.calories} calories burned!`; // Define shareQuote here
+    const shareUrl = "https://yourfitnesswebsite.com";
+    const shareQuote = `I achieved ${title} with ${metrics.steps} steps and ${metrics.calories} calories burned!`;
 
-  const handleShare = () => {
-    // Handle sharing logic here
-    console.log("Sharing:", shareQuote, shareUrl);
-  };
+    const handleShare = () => {
+        console.log("Sharing:", shareQuote, shareUrl);
+    };
 
-  return (
-    <AchievementContainer>
-      <AchievementTitle>{title}</AchievementTitle>
-      <MetricsContainer>
-        <MetricItem>
-          <MetricLabel>Steps:</MetricLabel>
-          <MetricValue>{metrics.steps}</MetricValue>
-        </MetricItem>
-        <MetricItem>
-          <MetricLabel>Calories Burned:</MetricLabel>
-          <MetricValue>{metrics.calories}</MetricValue>
-        </MetricItem>
-        <MetricItem>
-          <MetricLabel>Distance:</MetricLabel>
-          <MetricValue>{metrics.distance}</MetricValue>
-        </MetricItem>
-      </MetricsContainer>
-      <SocialSharing url={shareUrl} quote={shareQuote} />
-      <ShareButton onClick={handleShare}>Share Now</ShareButton>
-    </AchievementContainer>
-  );
+    return (
+        <AchievementContainer>
+            <AchievementTitle>{title}</AchievementTitle>
+            <MetricsContainer>
+                <MetricItem>
+                    <MetricLabel>Steps:</MetricLabel>
+                    <MetricValue>{metrics.steps}</MetricValue>
+                </MetricItem>
+                <MetricItem>
+                    <MetricLabel>Calories Burned:</MetricLabel>
+                    <MetricValue>{metrics.calories}</MetricValue>
+                </MetricItem>
+                <MetricItem>
+                    <MetricLabel>Distance:</MetricLabel>
+                    <MetricValue>{metrics.distance}</MetricValue>
+                </MetricItem>
+            </MetricsContainer>
+            <SocialSharing url={shareUrl} quote={shareQuote} />
+            <ShareButton onClick={handleShare}>Share Now</ShareButton>
+        </AchievementContainer>
+    );
 };
 
 export default Achievement;

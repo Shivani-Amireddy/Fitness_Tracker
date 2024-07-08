@@ -51,3 +51,91 @@ export const updateUserProfile = async (data) => {
     throw error;
   }
 };
+
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export const logFood = async (data) => {
+  try {
+    const response = await API.post('/food/log', data);
+    return response.data;
+  } catch (error) {
+    console.error('Log food error:', error);
+    throw error;
+  }
+};
+
+export const getFoodLogs = async () => {
+  try {
+    const response = await API.get('/food/logs');
+    return response.data;
+  } catch (error) {
+    console.error('Get food logs error:', error);
+    throw error;
+  }
+};
+
+export const updateFoodLog = async (data) => {
+  try {
+    const response = await API.put('/food/log', data);
+    return response.data;
+  } catch (error) {
+    console.error('Update food log error:', error);
+    throw error;
+  }
+};
+
+export const deleteFoodLog = async (id) => {
+  try {
+    const response = await API.delete(`/food/log/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Delete food log error:', error);
+    throw error;
+  }
+};
+
+export const logActivity = async (data) => {
+  try {
+    const response = await API.post('/activity/log', data);
+    return response.data;
+  } catch (error) {
+    console.error('Log activity error:', error);
+    throw error;
+  }
+};
+
+export const getActivityLogs = async () => {
+  try {
+    const response = await API.get('/activity/logs');
+    return response.data;
+  } catch (error) {
+    console.error('Get activity logs error:', error);
+    throw error;
+  }
+};
+
+export const updateActivityLog = async (data) => {
+  try {
+    const response = await API.put('/activity/log', data);
+    return response.data;
+  } catch (error) {
+    console.error('Update activity log error:', error);
+    throw error;
+  }
+};
+
+export const deleteActivityLog = async (id) => {
+  try {
+    const response = await API.delete(`/activity/log/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Delete activity log error:', error);
+    throw error;
+  }
+};

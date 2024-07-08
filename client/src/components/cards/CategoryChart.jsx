@@ -26,23 +26,33 @@ const Title = styled.div`
 `;
 
 const CategoryChart = ({ data }) => {
+  // Dummy pie chart data
+  const pieChartData = [
+    { name: "Running", value: 30 },
+    { name: "Swimming", value: 20 },
+    { name: "Cycling", value: 25 },
+    { name: "Walking", value: 15 },
+    { name: "Yoga", value: 10 },
+  ];
+
   return (
     <Card>
-      <Title>Weekly Calories Burned</Title>
-      {data?.pieChartData && (
-        <PieChart
-          series={[
-            {
-              data: data?.pieChartData,
-              innerRadius: 30,
-              outerRadius: 120,
-              paddingAngle: 5,
-              cornerRadius: 5,
-            },
-          ]}
-          height={300}
-        />
-      )}
+      <Title>Weekly Activity Breakdown</Title>
+      <PieChart
+        series={[
+          {
+            data: pieChartData.map((item) => ({
+              ...item,
+              label: `${item.name}: ${item.value.toFixed(2)}%`,
+            })),
+            innerRadius: 30,
+            outerRadius: 120,
+            paddingAngle: 5,
+            cornerRadius: 5,
+          },
+        ]}
+        height={300}
+      />
     </Card>
   );
 };

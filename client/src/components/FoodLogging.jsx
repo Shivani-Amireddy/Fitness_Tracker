@@ -1,172 +1,6 @@
-// import React, { useState, useEffect } from "react";
-// import styled from "styled-components";
-// import axios from "axios";
-
-// const FoodLoggingContainer = styled.div`
-//   background-color: ${({ theme }) => theme.bg};
-//   padding: 24px;
-//   border-radius: 8px;
-//   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-//   margin: 24px 0;
-// `;
-
-// const SectionTitle = styled.h2`
-//   font-size: 1.5rem;
-//   font-weight: 600;
-//   color: ${({ theme }) => theme.text_primary};
-//   margin-bottom: 16px;
-// `;
-
-// const FoodForm = styled.form`
-//   display: flex;
-//   flex-direction: column;
-//   gap: 16px;
-// `;
-
-// const FormGroup = styled.div`
-//   display: flex;
-//   flex-direction: column;
-// `;
-
-// const Label = styled.label`
-//   font-size: 1rem;
-//   color: ${({ theme }) => theme.text_primary};
-//   margin-bottom: 8px;
-// `;
-
-// const Input = styled.input`
-//   padding: 10px;
-//   font-size: 1rem;
-//   border: 1px solid ${({ theme }) => theme.text_secondary};
-//   border-radius: 4px;
-// `;
-
-// const Button = styled.button`
-//   padding: 12px 24px;
-//   background-color: ${({ theme }) => theme.primary};
-//   color: ${({ theme }) => theme.white};
-//   font-size: 1rem;
-//   font-weight: 600;
-//   border: none;
-//   border-radius: 4px;
-//   cursor: pointer;
-//   transition: background-color 0.3s ease;
-
-//   &:hover {
-//     background-color: ${({ theme }) => theme.primary_dark};
-//   }
-
-//   &:disabled {
-//     background-color: ${({ theme }) => theme.primary_light};
-//     cursor: not-allowed;
-//   }
-// `;
-
-// const ErrorMessage = styled.p`
-//   color: ${({ theme }) => theme.error};
-// `;
-
-// const FoodLogging = () => {
-//   const [foodName, setFoodName] = useState("");
-//   const [calories, setCalories] = useState("");
-//   const [foodList, setFoodList] = useState([]);
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState("");
-
-//   // useEffect(() => {
-//   //   const fetchFoodLogs = async () => {
-//   //     try {
-//   //       const token = localStorage.getItem("token");
-//   //       const response = await axios.get("http://localhost:8082/api/food/log", {
-//   //         headers: { Authorization: `Bearer ${token}` },
-//   //       });
-//   //       setFoodList(response.data);
-//   //     } catch (error) {
-//   //       console.error("Error fetching food logs:", error);
-//   //       setError("Error fetching food logs.");
-//   //     }
-//   //   };
-
-//   //   fetchFoodLogs();
-//   // }, []);
-
-//   const handleSubmit = async (e) => {
-//     // e.preventDefault();
-//     // setLoading(true);
-//     // setError("");
-
-//     // try {
-//     //   const token = localStorage.getItem("token");
-
-//     //   const response = await axios.post(
-//     //     "http://localhost:8082/api/food/log",
-//     //     { foodName, calories },
-//     //     { headers: { Authorization: `Bearer ${token}` } }
-//     //   );
-
-//     //   const newFood = response.data.food;
-//     //   setFoodList([...foodList, newFood]);
-
-//     //   setFoodName("");
-//     //   setCalories("");
-//     // } catch (error) {
-//     //   console.error("Error logging food:", error);
-//     //   setError("Error logging food. Please try again.");
-//     // } finally {
-//     //   setLoading(false);
-//     // }
-//   };
-
-//   return (
-//     <FoodLoggingContainer>
-//       <SectionTitle>Food Logging</SectionTitle>
-//       <FoodForm onSubmit={handleSubmit}>
-//         <FormGroup>
-//           <Label>Food Name</Label>
-//           <Input
-//             type="text"
-//             value={foodName}
-//             onChange={(e) => setFoodName(e.target.value)}
-//             placeholder="Enter food name"
-//             required
-//           />
-//         </FormGroup>
-//         <FormGroup>
-//           <Label>Calories</Label>
-//           <Input
-//             type="number"
-//             value={calories}
-//             onChange={(e) => setCalories(e.target.value)}
-//             placeholder="Enter calories"
-//             required
-//           />
-//         </FormGroup>
-//         <Button type="submit" disabled={loading}>
-//           {loading ? "Logging..." : "Log Food"}
-//         </Button>
-//         {error && <ErrorMessage>{error}</ErrorMessage>}
-//       </FoodForm>
-
-//       <SectionTitle>Food List</SectionTitle>
-//       {foodList.length === 0 ? (
-//         <p>No food logged yet.</p>
-//       ) : (
-//         <ul>
-//           {foodList.map((food, index) => (
-//             <li key={index}>
-//               <strong>{food.foodName}</strong> - {food.calories} calories
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//     </FoodLoggingContainer>
-//   );
-// };
-
-// export default FoodLogging;
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { logFood, getFoodLogs, updateFoodLog, deleteFoodLog } from "../api";
 
 const FoodLoggingContainer = styled.div`
   background-color: ${({ theme }) => theme.bg};
@@ -280,52 +114,60 @@ const DeleteButton = styled.button`
 const FoodLogging = () => {
   const [foodName, setFoodName] = useState("");
   const [calories, setCalories] = useState("");
-  const [foodList, setFoodList] = useState([
-    { id: 1, foodName: "Breakfast", calories: 400, date: "2024-07-01" },
-    { id: 2, foodName: "Lunch", calories: 600, date: "2024-07-01" },
-    { id: 3, foodName: "Dinner", calories: 800, date: "2024-07-01" },
-  ]);
+  const [foodList, setFoodList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [editId, setEditId] = useState(null);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    fetchFoodLogs();
+  }, []);
+
+  const fetchFoodLogs = async () => {
+    try {
+      const data = await getFoodLogs();
+      setFoodList(data);
+    } catch (error) {
+      console.error("Error fetching food logs:", error);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    if (editId !== null) {
-      // Edit existing food item
-      const updatedList = foodList.map((food) =>
-        food.id === editId ? { ...food, foodName, calories: parseInt(calories) } : food
-      );
-      setFoodList(updatedList);
+    try {
+      if (editId !== null) {
+        await updateFoodLog({ id: editId, foodName, calories: parseInt(calories) });
+      } else {
+        await logFood({ foodName, calories: parseInt(calories), date: new Date().toLocaleDateString() });
+      }
+      fetchFoodLogs();
+      setFoodName("");
+      setCalories("");
       setEditId(null);
-    } else {
-      // Add new food item with current date
-      const newFood = {
-        id: foodList.length + 1,
-        foodName,
-        calories: parseInt(calories),
-        date: new Date().toLocaleDateString(), // Set current date
-      };
-      setFoodList([...foodList, newFood]);
+    } catch (error) {
+      setError("Error logging food.");
+      console.error("Log food error:", error);
     }
 
-    setFoodName("");
-    setCalories("");
     setLoading(false);
   };
 
   const handleEdit = (food) => {
     setFoodName(food.foodName);
     setCalories(food.calories);
-    setEditId(food.id);
+    setEditId(food._id);
   };
 
-  const handleDelete = (id) => {
-    const updatedList = foodList.filter((food) => food.id !== id);
-    setFoodList(updatedList);
+  const handleDelete = async (id) => {
+    try {
+      await deleteFoodLog(id);
+      fetchFoodLogs();
+    } catch (error) {
+      console.error("Delete food log error:", error);
+    }
   };
 
   return (
@@ -352,7 +194,7 @@ const FoodLogging = () => {
             required
           />
         </FormGroup>
-        <Button type="submit">{editId !== null ? "Update Food" : "Log Food"}</Button>
+        <Button type="submit" disabled={loading}>{editId !== null ? "Update Food" : "Log Food"}</Button>
       </FoodForm>
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
@@ -371,13 +213,13 @@ const FoodLogging = () => {
           </thead>
           <tbody>
             {foodList.map((food) => (
-              <tr key={food.id}>
+              <tr key={food._id}>
                 <TableCell>{food.foodName}</TableCell>
                 <TableCell>{food.calories}</TableCell>
                 <TableCell>{food.date}</TableCell>
                 <TableCell>
                   <EditButton onClick={() => handleEdit(food)}>Edit</EditButton>
-                  <DeleteButton onClick={() => handleDelete(food.id)}>Delete</DeleteButton>
+                  <DeleteButton onClick={() => handleDelete(food._id)}>Delete</DeleteButton>
                 </TableCell>
               </tr>
             ))}
@@ -389,12 +231,3 @@ const FoodLogging = () => {
 };
 
 export default FoodLogging;
-
-
-
-
-
-
-
-
-

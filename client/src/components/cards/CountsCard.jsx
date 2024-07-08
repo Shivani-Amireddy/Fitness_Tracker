@@ -1,5 +1,10 @@
 import React from "react";
 import styled from "styled-components";
+import {
+  FitnessCenterRounded,
+  LocalFireDepartmentRounded,
+  TimelineRounded,
+} from "@mui/icons-material";
 
 const Card = styled.div`
   flex: 1;
@@ -81,14 +86,25 @@ const Desc = styled.div`
 `;
 
 const CountsCard = ({ item, data }) => {
+  // Dummy data to simulate the component with data available
+  const dummyData = {
+    totalCaloriesBurnt: 1500,
+    totalWorkouts: 2,
+    avgCaloriesBurntPerWorkout: 750,
+  };
+
+  // Check if data is available or use dummyData
+  const formattedValue =
+    data && data[item.key] !== undefined ? data[item.key].toFixed(2) : dummyData[item.key];
+
   return (
     <Card>
       <Left>
         <Title>{item.name}</Title>
         <Value>
-          {data && data[item.key].toFixed(2)}
-          <Unit>{item.unit}</Unit>
-          <Span positive>(+10%)</Span>
+          {formattedValue !== undefined ? formattedValue : "N/A"}
+          {typeof formattedValue === "number" && <Unit>{item.unit}</Unit>}
+          {/* <Span positive>(+10%)</Span> */}
         </Value>
         <Desc>{item.desc}</Desc>
       </Left>

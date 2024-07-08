@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import LogoImg from "../utils/Logo.png";
-import { Link as LinkR, NavLink } from "react-router-dom";
+import { Link as LinkR, NavLink, useHistory, useNavigate } from "react-router-dom";
 import { MenuRounded } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
@@ -107,9 +107,19 @@ const DropdownItem = styled.div`
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/"); // Redirect to SignIn page after logout
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -130,7 +140,6 @@ const Navbar = () => {
           <Navlink to="/water-intake">Water Intake</Navlink>
           <Navlink to="/sleep-tracking">Sleep Tracking</Navlink>
           <Navlink to="/recommendations">Recommendations</Navlink>
-          <Navlink to="/goals">Goals</Navlink>
           <Navlink to="/social-sharing">Social Sharing</Navlink>
         </NavItems>
 
@@ -142,7 +151,7 @@ const Navbar = () => {
             <DropdownItem as={LinkR} to="/profile">
               Edit Profile
             </DropdownItem>
-            <DropdownItem onClick={logout}>Logout</DropdownItem>
+            <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
           </DropdownMenu>
         </UserContainer>
       </NavContainer>
@@ -151,5 +160,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-

@@ -26,41 +26,28 @@ export const UserSignIn = async (data) => {
   }
 };
 
-// export const getDashboardDetails = async (token) => {
-//   try {
-//     const response = await API.get("/user/dashboard", {
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-//     console.log("Dashboard response:", response.data);
-//     return response;
-//   } catch (error) {
-//     console.error("Dashboard error:", error);
-//     throw error;
-//   }
-// };
+export const getUserProfile = async () => {
+  try {
+    const response = await API.get("/user/profile", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    console.log("Get profile response:", response.data);
+    return response;
+  } catch (error) {
+    console.error("Get profile error:", error);
+    throw error;
+  }
+};
 
-// export const getWorkouts = async (token, date) => {
-//   try {
-//     const response = await API.get(`/user/workout${date}`, {
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-//     console.log("Workouts response:", response.data);
-//     return response;
-//   } catch (error) {
-//     console.error("Workouts error:", error);
-//     throw error;
-//   }
-// };
-
-// export const addWorkout = async (token, data) => {
-//   try {
-//     const response = await API.post(`/user/workout`, data, {
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-//     console.log("Add workout response:", response.data);
-//     return response;
-//   } catch (error) {
-//     console.error("Add workout error:", error);
-//     throw error;
-//   }
-// };
+export const updateUserProfile = async (data) => {
+  try {
+    const response = await API.put("/user/profile", data, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    console.log("Update profile response:", response.data);
+    return response;
+  } catch (error) {
+    console.error("Update profile error:", error);
+    throw error;
+  }
+};

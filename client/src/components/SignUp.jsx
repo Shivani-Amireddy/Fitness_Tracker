@@ -92,8 +92,8 @@ const SignUp = () => {
   };
 
   const handleSignUp = async () => {
-    setLoading(true);
-    setButtonDisabled(true);
+    // setLoading(true);
+    // setButtonDisabled(true);
     if (validateInputs()) {
       try {
         const response = await UserSignUp({ name, email, password });

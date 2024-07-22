@@ -95,8 +95,8 @@ const SignIn = () => {
   };
 
   const handleSignIn = async () => {
-    setLoading(true);
-    setButtonDisabled(true);
+    // setLoading(true);
+    // setButtonDisabled(true);
     if (validateInputs()) {
       try {
         const res = await UserSignIn({ email, password });

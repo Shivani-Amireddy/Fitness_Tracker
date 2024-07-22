@@ -78,7 +78,7 @@ const Achievement = ({ title, metrics }) => {
                 </MetricItem>
             </MetricsContainer>
             <SocialSharing url={shareUrl} quote={shareQuote} />
-            <ShareButton onClick={handleShare}>Share Now</ShareButton>
+            {/* <ShareButton onClick={handleShare}>Share Now</ShareButton> */}
         </AchievementContainer>
     );
 };

@@ -38,10 +38,13 @@ const App = () => {
     <ThemeProvider theme={lightTheme}>
       <AuthProvider>
         <Router>
-          <Navbar />
-          <Routes>
+        <Routes>
             <Route path="/" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
+        </Routes>
+          <Navbar />
+          <Routes>
+           
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/food-logging" element={<FoodLogging />} />
             <Route path="/activity-logging" element={<PhysicalActivityLogging />} />
